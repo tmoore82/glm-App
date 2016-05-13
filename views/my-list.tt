@@ -1,0 +1,40 @@
+<div>
+	<a href="/logout">logout</a>
+</div>
+
+<div>
+    <table id="glist-Table">
+        <thead>
+            <tr>
+		<th>store</th>
+		<th>product</th>
+		<th>brand</th>
+		<th>category</th>
+		<th>price</th>
+		<th>size</th>
+		<th>unit</th>
+		<th>ppu</th>
+            </tr>
+        </thead>
+        <tbody id="my-glist">
+		<% FOREACH product IN items.keys.nsort %>
+			<tr>
+				<td><% items.$product.store %></td>
+				<td><% items.$product.product %></td>
+				<td><% items.$product.brand %></td>
+				<td><% items.$product.store %></td>
+				<td><% items.$product.category %></td>
+				<td><% items.$product.price %></td>
+				<td><% items.$product.size %></td>
+				<td><% items.$product.unit %></td>				
+				<td><% items.$product.ppu %></td>
+			</tr>
+		<% END %>
+        </tbody>
+        <tfoot>
+            <tr>
+		
+            </tr>
+        </tfoot>
+    </table>
+</div>

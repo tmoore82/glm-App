@@ -1,0 +1,86 @@
+<datalist id="products">
+	<% FOREACH name IN products.keys.nsort %>
+		<option value="<% products.$name.name %>">
+	<% END %>
+</datalist>
+	
+<div>
+	<a href="/logout">logout</a>
+</div>
+
+<br/><br/>
+
+<div>
+
+    Select a product to add to your list: <input type="text" id="input" list="products" placeholder="e.g. Bread" oninput="onInput()" onClick="Clear('input')">
+
+</div>
+
+<br/><br/>
+
+<form action="/my-list" method="post">
+	<input type="hidden" name="glist" id="glist" value="">
+	<button onClick="submitList()">Build List</button>
+</form>
+
+<br/><br/>
+
+<div>
+    <table id="grocTable">
+        <thead>
+            <tr>
+		<th>Edit</th>                
+		<th>Product</th>
+            </tr>
+        </thead>
+        <tbody id="myGroceries">
+        </tbody>
+        <tfoot>
+            <tr>
+		
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<script>
+    
+    var items = new Array();
+
+    function onInput() {
+
+        var val = document.getElementById("input").value;
+        var opts = document.getElementById("products").childNodes;
+        for (var i = 0; i < opts.length; i++) {
+              if (opts[i].value === val) {
+                updateTable(opts[i].value);
+		items.push(opts[i].value);
+                Clear("input");
+                break;
+              }
+        }
+      }
+      
+    function updateTable(p) {
+
+        var table = document.getElementById("myGroceries");
+        var row = table.insertRow(-1);
+        var cell1 = row.insertCell(0);
+	var cell2 = row.insertCell(1);
+	cell1.innerHTML = '<a onClick="deleteRow(this)">remove</a>';
+        cell2.innerHTML = p;
+    }
+
+    function deleteRow(tr) {
+	var row = tr.parentNode.parentNode;        
+	row.parentNode.removeChild(row);
+    }
+    
+    function Clear(f) {
+        document.getElementById(f).value = "";
+    }
+
+    function submitList() {
+	document.getElementById("glist").value = items.toString();
+    }
+</script>
