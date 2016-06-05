@@ -25,6 +25,44 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 SET search_path = public, pg_catalog;
 
+--
+-- Name: additems(text[]); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION additems(newitems text[]) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+INSERT INTO product (name) VALUES (UNNEST(newItems)); END; $$;
+
+
+ALTER FUNCTION public.additems(newitems text[]) OWNER TO postgres;
+
+--
+-- Name: get_items(text); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION get_items(plist text) RETURNS TABLE(store character varying, product character varying, brand character varying, category character varying, price real, size real, unit character varying, ppu real)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+RETURN QUERY
+SELECT store.name AS store, product.name AS product, brand.name AS brand, category.name AS category, item.price AS price, item.size AS size, unit.name AS unit, item.ppu AS ppu
+FROM item
+LEFT JOIN location on location.id = item.location
+LEFT JOIN store ON store.id = location.store
+LEFT JOIN brand ON brand.id = item.brand
+LEFT JOIN product ON product.id = item.product
+LEFT JOIN unit on unit.id = item.unit
+LEFT JOIN category ON category.id = product.category
+WHERE location.id IN (1,2,3)
+AND product.name = ANY(plist::text[])
+AND item.ppu = (SELECT MIN(i2.ppu) FROM item AS i2 WHERE i2.product = product.id) 
+ORDER BY store.name, category.name, product.name; END; $$;
+
+
+ALTER FUNCTION public.get_items(plist text) OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -193,7 +231,7 @@ ALTER SEQUENCE location_id_seq OWNED BY location.id;
 CREATE TABLE product (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
-    category integer
+    category integer DEFAULT 14
 );
 
 
@@ -796,6 +834,9 @@ COPY product (id, name, category) FROM stdin;
 109	Quinoa	13
 110	Spaghetti	13
 111	Ground Ginger	7
+112	Deoderant	14
+113	Toilet Paper	14
+114	Vital Wheat Gluten	14
 1	Almond Milk	10
 2	Fuji Apples	1
 5	Unsweetened Applesauce	13
@@ -884,6 +925,8 @@ COPY product (id, name, category) FROM stdin;
 3	McIntosh Apples	1
 4	Red Delicious Apples	1
 91	Sugar (Confectioner's)	6
+129	Watercress	14
+130	Spinach	14
 97	Oregano	7
 98	Green Beans	13
 99	Prenatal Vitamins	15
@@ -894,7 +937,7 @@ COPY product (id, name, category) FROM stdin;
 -- Name: product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tmoore82
 --
 
-SELECT pg_catalog.setval('product_id_seq', 111, true);
+SELECT pg_catalog.setval('product_id_seq', 131, true);
 
 
 --
@@ -979,8 +1022,6 @@ SELECT pg_catalog.setval('unit_id_seq', 6, true);
 --
 
 COPY user_roles (user_id, role_id) FROM stdin;
-1	1
-2	1
 \.
 
 
@@ -989,8 +1030,7 @@ COPY user_roles (user_id, role_id) FROM stdin;
 --
 
 COPY users (id, username, password) FROM stdin;
-1	test	test
-2	test2	{SSHA}kZGi2vSLhFaFH2BDw46CO5hZaWleIQGe+pqS3eJTFS2UZ5Oq
+3	paulie	{SSHA}L+gjtTuB/WXh2J1pyQg63Pk1Zhj8DS4f
 \.
 
 
@@ -998,7 +1038,7 @@ COPY users (id, username, password) FROM stdin;
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tmoore82
 --
 
-SELECT pg_catalog.setval('users_id_seq', 2, true);
+SELECT pg_catalog.setval('users_id_seq', 3, true);
 
 
 --
@@ -1233,6 +1273,137 @@ REVOKE ALL ON SCHEMA public FROM PUBLIC;
 REVOKE ALL ON SCHEMA public FROM postgres;
 GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- Name: additems(text[]); Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON FUNCTION additems(newitems text[]) FROM PUBLIC;
+REVOKE ALL ON FUNCTION additems(newitems text[]) FROM postgres;
+GRANT ALL ON FUNCTION additems(newitems text[]) TO postgres;
+GRANT ALL ON FUNCTION additems(newitems text[]) TO PUBLIC;
+GRANT ALL ON FUNCTION additems(newitems text[]) TO paulie;
+
+
+--
+-- Name: brand; Type: ACL; Schema: public; Owner: tmoore82
+--
+
+REVOKE ALL ON TABLE brand FROM PUBLIC;
+REVOKE ALL ON TABLE brand FROM tmoore82;
+GRANT ALL ON TABLE brand TO tmoore82;
+GRANT SELECT ON TABLE brand TO paulie;
+
+
+--
+-- Name: category; Type: ACL; Schema: public; Owner: tmoore82
+--
+
+REVOKE ALL ON TABLE category FROM PUBLIC;
+REVOKE ALL ON TABLE category FROM tmoore82;
+GRANT ALL ON TABLE category TO tmoore82;
+GRANT SELECT ON TABLE category TO paulie;
+
+
+--
+-- Name: item; Type: ACL; Schema: public; Owner: tmoore82
+--
+
+REVOKE ALL ON TABLE item FROM PUBLIC;
+REVOKE ALL ON TABLE item FROM tmoore82;
+GRANT ALL ON TABLE item TO tmoore82;
+GRANT SELECT ON TABLE item TO paulie;
+
+
+--
+-- Name: location; Type: ACL; Schema: public; Owner: tmoore82
+--
+
+REVOKE ALL ON TABLE location FROM PUBLIC;
+REVOKE ALL ON TABLE location FROM tmoore82;
+GRANT ALL ON TABLE location TO tmoore82;
+GRANT SELECT ON TABLE location TO paulie;
+
+
+--
+-- Name: product; Type: ACL; Schema: public; Owner: tmoore82
+--
+
+REVOKE ALL ON TABLE product FROM PUBLIC;
+REVOKE ALL ON TABLE product FROM tmoore82;
+GRANT ALL ON TABLE product TO tmoore82;
+GRANT SELECT,INSERT ON TABLE product TO paulie;
+
+
+--
+-- Name: product_id_seq; Type: ACL; Schema: public; Owner: tmoore82
+--
+
+REVOKE ALL ON SEQUENCE product_id_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE product_id_seq FROM tmoore82;
+GRANT ALL ON SEQUENCE product_id_seq TO tmoore82;
+GRANT USAGE ON SEQUENCE product_id_seq TO paulie;
+
+
+--
+-- Name: roles; Type: ACL; Schema: public; Owner: tmoore82
+--
+
+REVOKE ALL ON TABLE roles FROM PUBLIC;
+REVOKE ALL ON TABLE roles FROM tmoore82;
+GRANT ALL ON TABLE roles TO tmoore82;
+GRANT SELECT ON TABLE roles TO paulie;
+
+
+--
+-- Name: store; Type: ACL; Schema: public; Owner: tmoore82
+--
+
+REVOKE ALL ON TABLE store FROM PUBLIC;
+REVOKE ALL ON TABLE store FROM tmoore82;
+GRANT ALL ON TABLE store TO tmoore82;
+GRANT SELECT ON TABLE store TO paulie;
+
+
+--
+-- Name: type; Type: ACL; Schema: public; Owner: tmoore82
+--
+
+REVOKE ALL ON TABLE type FROM PUBLIC;
+REVOKE ALL ON TABLE type FROM tmoore82;
+GRANT ALL ON TABLE type TO tmoore82;
+GRANT SELECT ON TABLE type TO paulie;
+
+
+--
+-- Name: unit; Type: ACL; Schema: public; Owner: tmoore82
+--
+
+REVOKE ALL ON TABLE unit FROM PUBLIC;
+REVOKE ALL ON TABLE unit FROM tmoore82;
+GRANT ALL ON TABLE unit TO tmoore82;
+GRANT SELECT ON TABLE unit TO paulie;
+
+
+--
+-- Name: user_roles; Type: ACL; Schema: public; Owner: tmoore82
+--
+
+REVOKE ALL ON TABLE user_roles FROM PUBLIC;
+REVOKE ALL ON TABLE user_roles FROM tmoore82;
+GRANT ALL ON TABLE user_roles TO tmoore82;
+GRANT SELECT ON TABLE user_roles TO paulie;
+
+
+--
+-- Name: users; Type: ACL; Schema: public; Owner: tmoore82
+--
+
+REVOKE ALL ON TABLE users FROM PUBLIC;
+REVOKE ALL ON TABLE users FROM tmoore82;
+GRANT ALL ON TABLE users TO tmoore82;
+GRANT SELECT ON TABLE users TO paulie;
 
 
 --

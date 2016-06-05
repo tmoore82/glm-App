@@ -20,7 +20,7 @@
 
 <form action="/my-list" method="post">
 	<input type="hidden" name="glist" id="glist" value="">
-	<input type="hidden" name="newlist" id="newlist" value="">
+	<input type="hidden" name="newList" id="newList" value="">
 	<button onClick="submitList()">Build List</button>
 </form>
 
@@ -94,6 +94,6 @@
 
     function submitList() {
 	document.getElementById("glist").value = items.toString();
-	document.getElementById("newlist").value = new_items.toString();
+	document.getElementById("newList").value = new_items.toString();
     }
 </script>

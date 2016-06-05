@@ -37,4 +37,26 @@
             </tr>
         </tfoot>
     </table>
+    <br />
+    <br />
+    The following products are not yet associated with any store:
+    <table id="newlist-Table">
+        <thead>
+            <tr>
+		<th>product</th>
+            </tr>
+        </thead>
+        <tbody id="my-newList">
+		<% FOREACH product IN newItems %>
+			<tr>
+				<td><% product %></td>
+			</tr>
+		<% END %>
+        </tbody>
+        <tfoot>
+            <tr>
+		
+            </tr>
+        </tfoot>
+    </table>
 </div>

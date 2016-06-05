@@ -32,13 +32,20 @@ post '/my-list' => sub {
 #post '/my-list' => require_login sub {
 
 	my $glist = param "glist";
+	my $newList = param "newList";
+	my @newList = split(',',$newList);
 
 	my $sth = database->prepare('SELECT * FROM get_items(\'{' . $glist . '}\')', { RaiseError => 1} );
 
 	$sth->execute();
 
+	my $sth2 = database->prepare('SELECT addItems(\'{' . $newList . '}\')', { RaiseError => 1} );
+
+	$sth2->execute();
+
 	template 'my-list', {
 		'items' => $sth->fetchall_hashref('product'),
+		'newItems' => \@newList,
 	};
 
 };
