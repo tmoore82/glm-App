@@ -43,9 +43,14 @@ post '/my-list' => sub {
 
 	$sth2->execute();
 
+	my $sth3 = database->prepare('SELECT * FROM get_no_assoc(\'{' . $glist . $newList . '}\')', {RaiseError => 1} );
+
+	$sth3->execute();
+
 	template 'my-list', {
 		'items' => $sth->fetchall_hashref('product'),
 		'newItems' => \@newList,
+		'noAssoc' => $sth3->fetchall_hashref('names'),
 	};
 
 };

@@ -52,6 +52,11 @@
 				<td><% product %></td>
 			</tr>
 		<% END %>
+		<% FOREACH name IN  noAssoc.keys.nsort %>
+			<tr>
+				<td><% name %></td>
+			</tr>
+		<% END %>
         </tbody>
         <tfoot>
             <tr>
