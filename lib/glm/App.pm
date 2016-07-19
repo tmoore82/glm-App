@@ -8,6 +8,8 @@ use Template;
 
 our $VERSION = '0.1';
 
+our @locations = (1, 2, 3);
+
 get '/logout' => sub {
 
 	app->destroy_session;
@@ -35,24 +37,51 @@ post '/my-list' => sub {
 	my $newList = param "newList";
 	my @newList = split(',',$newList);
 
-	my $sth = database->prepare('SELECT * FROM get_items(\'{' . $glist . '}\')', { RaiseError => 1} );
+	my $sth_glist = database->prepare('SELECT * FROM get_items(\'{' . $glist . '}\')', { RaiseError => 1} );
 
-	$sth->execute();
+	$sth_glist->execute();
 
-	my $sth2 = database->prepare('SELECT addItems(\'{' . $newList . '}\')', { RaiseError => 1} );
+	my $sth_newList = database->prepare('SELECT addItems(\'{' . $newList . '}\')', { RaiseError => 1} );
 
-	$sth2->execute();
+	$sth_newList->execute();
 
-	my $sth3 = database->prepare('SELECT * FROM get_no_assoc(\'{' . $glist . $newList . '}\')', {RaiseError => 1} );
+	my $sth_catList = database->prepare('SELECT * FROM get_no_assoc(\'{' . $glist . $newList . '}\')', {RaiseError => 1} );
 
-	$sth3->execute();
+	$sth_catList->execute();
 
 	template 'my-list', {
-		'items' => $sth->fetchall_hashref('product'),
+		'items' => $sth_glist->fetchall_hashref('product'),
 		'newItems' => \@newList,
-		'noAssoc' => $sth3->fetchall_hashref('names'),
+		'noAssoc' => $sth_catList->fetchall_hashref('names'),
 	};
 
 };
 
+post '/update-item' => sub {
+#post '/update-item' => require_login sub {
+
+	my $sth_locations = database->prepare('SELECT * FROM get_locations(' . @locations. ')', { RaiseError => 1} );
+
+	$sth_locations->execute();
+
+	my $sth_brand = database->prepare('SELECT * FROM brand', { RaiseError => 1} );
+
+	$sth_brand->execute();
+
+	my $sth_units = database->prepare('SELECT * FROM unit', { RaiseError => 1} );
+
+	$sth_units->execute();
+
+	my $sth_types = database->prepare('SELECT * FROM type', { RaiseError => 1} );
+
+	$sth_types->execute();
+
+	template 'update-item', {
+		'locations' => $sth_locations->fetchall_hashref('id'),
+		'brands' => $sth_brand->fetchall_hashref('id'),
+		'units' => $sth_units->fetchall_hashref('id'),
+		'types' => $sth_types->fetchall_hashref('id'),
+	};
+
+};
 true;

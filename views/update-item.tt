@@ -1,0 +1,89 @@
+<datalist id="brands">
+	<% FOREACH brand IN brands.keys.nsort %>
+		<option value="<% brands.$name.name %>">
+	<% END %>
+</datalist>
+
+Select a location: <select name="locations">
+	<% FOREACH location IN locations.keys.nsort %>
+		<option value="<% locations.$id.id %>"><% locations.$name.name %></option>
+	<% END %>
+</select>
+
+<br />
+
+<input type="checkbox" id="unavailable-product" />Product unavailable at this location
+
+<br />
+
+Select an existing brand or enter a new one: <input type="text" id="brand" list="brands" placeholder="e.g. Smart Balance" />
+
+<br />
+
+<input type="checkbox" id="unavailable-brand" />Brand unavailable at this location
+
+<br />
+
+Price: <input type="number" step="any" min="0" id="price" />
+
+<br />
+
+Size: <input type="number" step="any" min="0" id="size" />
+
+<br />
+
+Unit: <select name="units">
+	<% FOREACH unit IN units.keys.nsort %>
+		<option value="<% units.$id.id %>"><% unit.$name.name %></option>
+	<% END %>
+</select>
+
+<br />
+
+<input type="checkbox" id="vegan" />Vegan?
+
+<br />
+
+Type: <select name="types">
+	<% FOREACH type IN types.keys.nsort %>
+		<option value="<% type.$id.id %>"><% type.$name.name %></option>
+	<% END %>
+</select>
+
+<br />
+
+Taste: <select name="taste">
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+	<option value="5">5</option>
+</select>
+
+<br />
+
+Nutrition: <select name="nutrition">
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+	<option value="5">5</option>
+</select>
+
+<br />
+
+Notes: <textarea name="notes" rows="10" cols="30"></textarea>
+
+<br />
+
+<button type="button" onClick="updateItem()">Update Item</button>
+
+<script>
+
+	function updateItem() {
+		
+		// doStuff
+
+	}
+
+</script>
