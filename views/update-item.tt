@@ -1,12 +1,12 @@
 <datalist id="brands">
 	<% FOREACH brand IN brands.keys.nsort %>
-		<option value="<% brands.$name.name %>">
+		<option value="<% brands.$brand.name %>">
 	<% END %>
 </datalist>
 
 Select a location: <select name="locations">
 	<% FOREACH location IN locations.keys.nsort %>
-		<option value="<% locations.$id.id %>"><% locations.$name.name %></option>
+		<option value="<% locations.$location.id %>"><% locations.$location.name %></option>
 	<% END %>
 </select>
 
@@ -34,7 +34,7 @@ Size: <input type="number" step="any" min="0" id="size" />
 
 Unit: <select name="units">
 	<% FOREACH unit IN units.keys.nsort %>
-		<option value="<% units.$id.id %>"><% unit.$name.name %></option>
+		<option value="<% units.$unit.id %>"><% units.$unit.name %></option>
 	<% END %>
 </select>
 
@@ -45,8 +45,9 @@ Unit: <select name="units">
 <br />
 
 Type: <select name="types">
+	<option value="(none)">(none)</option>
 	<% FOREACH type IN types.keys.nsort %>
-		<option value="<% type.$id.id %>"><% type.$name.name %></option>
+		<option value="<% types.$type.id %>"><% types.$type.name %></option>
 	<% END %>
 </select>
 

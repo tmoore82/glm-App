@@ -57,10 +57,12 @@ post '/my-list' => sub {
 
 };
 
-post '/update-item' => sub {
-#post '/update-item' => require_login sub {
+get '/update-item' => sub {
+#get '/update-item' => require_login sub {
 
-	my $sth_locations = database->prepare('SELECT * FROM get_locations(' . @locations. ')', { RaiseError => 1} );
+	my $locations = join(",",@locations);
+
+	my $sth_locations = database->prepare('SELECT * FROM get_locations(\'{' . $locations . '}\')', { RaiseError => 1} );
 
 	$sth_locations->execute();
 
