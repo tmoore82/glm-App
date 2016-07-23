@@ -20,11 +20,10 @@
         <tbody id="my-glist">
 		<% FOREACH product IN items.keys.nsort %>
 			<tr>
-				<td><a href="/update-item">update</a></td>
+				<td><a href="/update-item?id=<% items.$product.id %>&product=<% items.$product.product %>&store=<% items.$product.store %>&brand=<% items.$product.brand %>&category=<% items.$product.category %>&price=<% items.$product.price %>&size=<% items.$product.size %>&unit=<% items.$product.unit %>">update</a></td>
 				<td><% items.$product.store %></td>
 				<td><% items.$product.product %></td>
 				<td><% items.$product.brand %></td>
-				<td><% items.$product.store %></td>
 				<td><% items.$product.category %></td>
 				<td><% items.$product.price %></td>
 				<td><% items.$product.size %></td>
@@ -52,13 +51,13 @@
         <tbody id="my-newList">
 		<% FOREACH product IN newItems %>
 			<tr>
-				<td><a href="/update-item">update</a></td>
+				<td><a href="/update-item?product=<% product %>">update</a></td>
 				<td><% product %></td>
 			</tr>
 		<% END %>
 		<% FOREACH name IN  noAssoc.keys.nsort %>
 			<tr>
-				<td><a href="/update-item">update</a></td>
+				<td><a href="/update-item?product=<% product %>">update</a></td>
 				<td><% name %></td>
 			</tr>
 		<% END %>

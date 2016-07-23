@@ -60,6 +60,15 @@ post '/my-list' => sub {
 get '/update-item' => sub {
 #get '/update-item' => require_login sub {
 
+	my $id = param "id";	
+	my $store = param "store";
+	my $product = param "product";
+	my $brand = param "brand";
+	my $category = param "category";
+	my $price = param "price";
+	my $size = param "size";
+	my $unit = param "unit";
+
 	my $locations = join(",",@locations);
 
 	my $sth_locations = database->prepare('SELECT * FROM get_locations(\'{' . $locations . '}\')', { RaiseError => 1} );
@@ -83,6 +92,14 @@ get '/update-item' => sub {
 		'brands' => $sth_brand->fetchall_hashref('id'),
 		'units' => $sth_units->fetchall_hashref('id'),
 		'types' => $sth_types->fetchall_hashref('id'),
+		'i_id' => $id,
+		'i_store' => $store,
+		'i_product' => $product,
+		'i_brand' => $brand,
+		'i_category' => $category,
+		'i_price' => $price,
+		'i_size' => $size,
+		'i_unit' => $unit,
 	};
 
 };
