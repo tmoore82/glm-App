@@ -15,12 +15,16 @@
 		<th>size</th>
 		<th>unit</th>
 		<th>ppu</th>
+		<th>vegan</th>
+		<th>histlow</th>
+		<th>taste</th>
+		<th>nutrition</th>
             </tr>
         </thead>
         <tbody id="my-glist">
 		<% FOREACH product IN items.keys.nsort %>
 			<tr>
-				<td><a href="/update-item?id=<% items.$product.id %>&product=<% items.$product.product %>&store=<% items.$product.store %>&brand=<% items.$product.brand %>&category=<% items.$product.category %>&price=<% items.$product.price %>&size=<% items.$product.size %>&unit=<% items.$product.unit %>">update</a></td>
+				<td><a href="/update-item?id=<% items.$product.id %>&product=<% items.$product.product %>&store=<% items.$product.store %>&brand=<% items.$product.brand %>&category=<% items.$product.category %>&price=<% items.$product.price %>&size=<% items.$product.size %>&unit=<% items.$product.unit %>&ppu=<% items.$product.ppu %>&vegan=<% items.$product.vegan %>&p_un=<% items.$product.p_un %>&b_un=<% items.$product.b_un %>&histlow=<% items.$product.histlow %>&taste=<% items.$product.taste %>&nutrition=<% items.$product.nutrition %>&notes=<% items.$product.notes %>&location=<% items.$product.location %>">update</a></td>
 				<td><% items.$product.store %></td>
 				<td><% items.$product.product %></td>
 				<td><% items.$product.brand %></td>
@@ -29,6 +33,16 @@
 				<td><% items.$product.size %></td>
 				<td><% items.$product.unit %></td>				
 				<td><% items.$product.ppu %></td>
+				<td>
+					<% IF items.$product.vegan %>
+						yes
+					<% ELSE %>
+						no
+					<% END %>
+				</td>
+				<td><% items.$product.histlow %></td>
+				<td><% items.$product.taste %></td>
+				<td><% items.$product.nutrition %></td>
 			</tr>
 		<% END %>
         </tbody>

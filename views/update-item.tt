@@ -16,7 +16,11 @@ Select a location: <select name="locations" required>
 
 <br />
 
-<input type="checkbox" id="unavailable-product" />Product unavailable at this location
+<% IF i_p_un %>
+	<input type="checkbox" id="unavailable-product" checked />Product unavailable at this location
+<% ELSE %>
+	<input type="checkbox" id="unavailable-product" />Product unavailable at this location
+<% END %>
 
 <br />
 
@@ -29,7 +33,23 @@ Select an existing brand or enter a new one:
 
 <br />
 
-<input type="checkbox" id="unavailable-brand" />Brand unavailable at this location
+<% IF i_b_un %>
+	<input type="checkbox" id="unavailable-brand" checked />Brand unavailable at this location
+<% ELSE %>
+	<input type="checkbox" id="unavailable-brand" />Brand unavailable at this location
+<% END %>
+
+<br />
+
+Category: <select name="categories" required>
+	<% FOREACH category in categories.keys.nsort %>
+		<% IF categories.$category.name	== i_category %>
+			<option value="<% categories.$category.name %>" selected="selected"><% categories.$category.name %></option>
+		<% ELSE %>
+			<option value="<% categories.$category.name %>"><% categories.$category.name %></option>
+		<% END %>
+	<% END %>
+</select>
 
 <br />
 
@@ -61,7 +81,11 @@ Unit: <select name="units" required>
 
 <br />
 
-<input type="checkbox" id="vegan" />Vegan
+<% IF i_vegan %>
+	<input type="checkbox" id="vegan" checked />Vegan
+<% ELSE %>
+	<input type="checkbox" id="vegan" />Vegan
+<% END %>
 
 <br />
 
@@ -74,27 +98,41 @@ Type: <select name="types">
 
 <br />
 
+Historic low: <input type="text" id="histlow" value="<% i_histlow %>" />
+
+<br />
+
 Taste: <select name="taste">
-	<option value="1">1</option>
-	<option value="2">2</option>
-	<option value="3">3</option>
-	<option value="4">4</option>
-	<option value="5">5</option>
+	<% SET n = 1 %>
+	<% WHILE n < 6 %>
+		<% IF n == i_taste %>
+			<option value="<% n %>" selected="selected"><% n %></option>
+		<% ELSE %>
+			<option value="<% n %>"><% n %></option>
+		<% END %>
+
+		<% n = n + 1 %>
+	<% END %>
 </select>
 
 <br />
 
 Nutrition: <select name="nutrition">
-	<option value="1">1</option>
-	<option value="2">2</option>
-	<option value="3">3</option>
-	<option value="4">4</option>
-	<option value="5">5</option>
+	<% SET n = 1 %>
+	<% WHILE n < 6 %>
+		<% IF n == i_nutrition %>
+			<option value="<% n %>" selected="selected"><% n %></option>
+		<% ELSE %>
+			<option value="<% n %>"><% n %></option>
+		<% END %>
+
+		<% n = n + 1 %>
+	<% END %>
 </select>
 
 <br />
 
-Notes: <textarea name="notes" rows="10" cols="30"></textarea>
+Notes: <textarea name="notes" rows="10" cols="30" value="<% i_notes %>"></textarea>
 
 <br />
 

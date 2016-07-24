@@ -10,6 +10,8 @@ our $VERSION = '0.1';
 
 our @locations = (1, 2, 3);
 
+our $this_user = 3;
+
 get '/logout' => sub {
 
 	app->destroy_session;
@@ -36,8 +38,9 @@ post '/my-list' => sub {
 	my $glist = param "glist";
 	my $newList = param "newList";
 	my @newList = split(',',$newList);
+	my $locations = join(",",@locations);
 
-	my $sth_glist = database->prepare('SELECT * FROM get_items(\'{' . $glist . '}\')', { RaiseError => 1} );
+	my $sth_glist = database->prepare('SELECT * FROM get_items(\'{' . $glist . '}\',\'{' . $locations . '}\',' . $this_user .')', { RaiseError => 1} );
 
 	$sth_glist->execute();
 
@@ -68,28 +71,42 @@ get '/update-item' => sub {
 	my $price = param "price";
 	my $size = param "size";
 	my $unit = param "unit";
+	my $ppu = param "ppu";
+	my $vegan = param "vegan";
+	my $p_un = param "p_un";
+	my $b_un = param "b_un";
+	my $histlow = param "histlow";	
+	my $taste = param "taste";
+	my $nutrition = param "nutrition";
+	my $notes = param "notes";
+	my $location = param "location";
 
 	my $locations = join(",",@locations);
 
-	my $sth_locations = database->prepare('SELECT * FROM get_locations(\'{' . $locations . '}\')', { RaiseError => 1} );
+	my $sth_locations = database->prepare('SELECT * FROM get_locations(\'{' . $locations . '}\')', { RaiseError => 1 } );
 
 	$sth_locations->execute();
 
-	my $sth_brand = database->prepare('SELECT * FROM brand', { RaiseError => 1} );
+	my $sth_brand = database->prepare('SELECT * FROM brand', { RaiseError => 1 } );
 
 	$sth_brand->execute();
 
-	my $sth_units = database->prepare('SELECT * FROM unit', { RaiseError => 1} );
+	my $sth_categories = database->prepare('SELECT * FROM category', { RaiseError => 1 } );
+
+	$sth_categories->execute();
+
+	my $sth_units = database->prepare('SELECT * FROM unit', { RaiseError => 1 } );
 
 	$sth_units->execute();
 
-	my $sth_types = database->prepare('SELECT * FROM type', { RaiseError => 1} );
+	my $sth_types = database->prepare('SELECT * FROM type', { RaiseError => 1 } );
 
 	$sth_types->execute();
 
 	template 'update-item', {
 		'locations' => $sth_locations->fetchall_hashref('id'),
 		'brands' => $sth_brand->fetchall_hashref('id'),
+		'categories' => $sth_categories->fetchall_hashref('id'),
 		'units' => $sth_units->fetchall_hashref('id'),
 		'types' => $sth_types->fetchall_hashref('id'),
 		'i_id' => $id,
@@ -100,6 +117,15 @@ get '/update-item' => sub {
 		'i_price' => $price,
 		'i_size' => $size,
 		'i_unit' => $unit,
+		'i_ppu' => $ppu,
+		'i_vegan' => $vegan,
+		'i_p_un' => $p_un,
+		'i_b_un' => $b_un,
+		'i_histlow' => $histlow,
+		'i_taste' => $taste,
+		'i_nutrition' => $nutrition,
+		'i_notes' => $notes,
+		'i_location' => $location,
 	};
 
 };
