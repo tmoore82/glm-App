@@ -142,7 +142,7 @@ Notes: <textarea name="notes" rows="10" cols="30" value="<% i_notes %>"></textar
 
 	function updateItem() {
 		
-		// doStuff
+		var glist = 'empty';
 
 	}
 

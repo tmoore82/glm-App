@@ -12,6 +12,10 @@ our @locations = (1, 2, 3);
 
 our $this_user = 3;
 
+our $sesh_glist = '';
+
+our $sesh_newList = '';
+
 get '/logout' => sub {
 
 	app->destroy_session;
@@ -35,8 +39,17 @@ get '/' => sub {
 post '/my-list' => sub {
 #post '/my-list' => require_login sub {
 
-	my $glist = param "glist";
-	my $newList = param "newList";
+	my $glist = '';
+	my $newList = '';
+
+	if (param('glist') == 'empty') {
+		$glist = $sesh_glist;
+		$newList = $sesh_newList;
+	} else {
+		$glist = param "glist";
+		$newList = param "newList";
+	}
+
 	my @newList = split(',',$newList);
 	my $locations = join(",",@locations);
 
@@ -129,4 +142,12 @@ get '/update-item' => sub {
 	};
 
 };
+
+get '/process-item' => sub {
+#get '/process-item' => require_login sub {
+
+	
+	
+};
+
 true;
