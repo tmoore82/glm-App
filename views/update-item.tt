@@ -1,149 +1,151 @@
-<datalist id="brands">
-	<% FOREACH brand IN brands.keys.nsort %>
-		<option value="<% brands.$brand.name %>">
-	<% END %>
-</datalist>
+<form action="/process-item" method="post">
 
-Select a location: <select name="locations" required>
-	<% FOREACH location IN locations.keys.nsort %>	
-		<% IF locations.$location.name == i_store %>
-			<option value="<% locations.$location.id %>" selected="selected"><% locations.$location.name %></option>
-		<% ELSE %>
-			<option value="<% locations.$location.id %>"><% locations.$location.name %></option>
+	<input type="hidden" name="item" value="<% i_item %>">
+	<input type="hidden" name="is_new" value="<% is_new %>">
+	<input type="hidden" name="product" value="<% i_product %>">
+
+	Product: <% i_product %>
+
+	<br />
+
+	Select a location: <select name="location" required>
+		<% FOREACH location IN locations.keys.nsort %>	
+			<% IF locations.$location.name == i_store %>
+				<option value="<% locations.$location.id %>" selected="selected"><% locations.$location.name %></option>
+			<% ELSE %>
+				<option value="<% locations.$location.id %>"><% locations.$location.name %></option>
+			<% END %>
 		<% END %>
-	<% END %>
-</select>
+	</select>
 
-<br />
+	<br />
 
-<% IF i_p_un %>
-	<input type="checkbox" id="unavailable-product" checked />Product unavailable at this location
-<% ELSE %>
-	<input type="checkbox" id="unavailable-product" />Product unavailable at this location
-<% END %>
-
-<br />
-
-Select an existing brand or enter a new one: 
-	<% IF i_brand %>
-		<input type="text" id="brand" list="brands" value="<% i_brand %>" required />
-	<% ELSE %> 
-		<input type="text" id="brand" list="brands" placeholder="e.g. Smart Balance" required />
+	<% IF i_p_un %>
+		<input type="checkbox" name="p_un" id="unavailable-product" checked />Product unavailable at this location
+	<% ELSE %>
+		<input type="checkbox" name="p_un" id="unavailable-product" />Product unavailable at this location
 	<% END %>
 
-<br />
+	<br />
 
-<% IF i_b_un %>
-	<input type="checkbox" id="unavailable-brand" checked />Brand unavailable at this location
-<% ELSE %>
-	<input type="checkbox" id="unavailable-brand" />Brand unavailable at this location
-<% END %>
-
-<br />
-
-Category: <select name="categories" required>
-	<% FOREACH category in categories.keys.nsort %>
-		<% IF categories.$category.name	== i_category %>
-			<option value="<% categories.$category.name %>" selected="selected"><% categories.$category.name %></option>
-		<% ELSE %>
-			<option value="<% categories.$category.name %>"><% categories.$category.name %></option>
+	<datalist id="brands">
+		<% FOREACH brand IN brands.keys.nsort %>
+			<option value="<% brands.$brand.name %>">
 		<% END %>
-	<% END %>
-</select>
+	</datalist>
 
-<br />
-
-Price: 
-	<% IF i_price %>
-		<input type="number" step="any" min="0" id="price" value="<% i_price %>" required />
-	<% ELSE %> 
-		<input type="number" step="any" min="0" id="price" required />
-	<% END %>
-<br />
-
-Size: 
-	<% IF i_size %>
-		<input type="number" step="any" min="0" id="size" value="<% i_size %>" required />
-	<% ELSE %> 
-		<input type="number" step="any" min="0" id="size" required />
-	<% END %>
-
-<br />
-
-Unit: <select name="units" required>
-	<% FOREACH unit IN units.keys.nsort %>
-		<% IF units.$unit.name == i_unit %>
-			<option value="<% units.$unit.id %>" selected="selected"><% units.$unit.name %></option>
-		<% ELSE %>
-			<option value="<% units.$unit.id %>"><% units.$unit.name %></option>
-		<% END %>
-	<% END %>
-
-<br />
-
-<% IF i_vegan %>
-	<input type="checkbox" id="vegan" checked />Vegan
-<% ELSE %>
-	<input type="checkbox" id="vegan" />Vegan
-<% END %>
-
-<br />
-
-Type: <select name="types">
-	<option value="(none)">(none)</option>
-	<% FOREACH type IN types.keys.nsort %>
-		<option value="<% types.$type.id %>"><% types.$type.name %></option>
-	<% END %>
-</select>
-
-<br />
-
-Historic low: <input type="text" id="histlow" value="<% i_histlow %>" />
-
-<br />
-
-Taste: <select name="taste">
-	<% SET n = 1 %>
-	<% WHILE n < 6 %>
-		<% IF n == i_taste %>
-			<option value="<% n %>" selected="selected"><% n %></option>
-		<% ELSE %>
-			<option value="<% n %>"><% n %></option>
+	Select an existing brand or enter a new one: 
+		<% IF i_brand %>
+			<input type="text" name="brand" id="brand" list="brands" value="<% i_brand %>" required />
+		<% ELSE %> 
+			<input type="text" name="brand" id="brand" list="brands" placeholder="e.g. Smart Balance" required />
 		<% END %>
 
-		<% n = n + 1 %>
+	<br />
+
+	<% IF i_b_un %>
+		<input type="checkbox" name="b_un" id="unavailable-brand" checked />Brand unavailable at this location
+	<% ELSE %>
+		<input type="checkbox" name="b_un" id="unavailable-brand" />Brand unavailable at this location
 	<% END %>
-</select>
 
-<br />
+	<br />
 
-Nutrition: <select name="nutrition">
-	<% SET n = 1 %>
-	<% WHILE n < 6 %>
-		<% IF n == i_nutrition %>
-			<option value="<% n %>" selected="selected"><% n %></option>
-		<% ELSE %>
-			<option value="<% n %>"><% n %></option>
+	Category: <select name="category" required>
+		<% FOREACH category in categories.keys.nsort %>
+			<% IF categories.$category.name	== i_category %>
+				<option value="<% categories.$category.name %>" selected="selected"><% categories.$category.name %></option>
+			<% ELSE %>
+				<option value="<% categories.$category.name %>"><% categories.$category.name %></option>
+			<% END %>
+		<% END %>
+	</select>
+
+	<br />
+
+	Price: 
+		<% IF i_price %>
+			<input type="number" step="any" min="0" name="price" id="price" value="<% i_price %>" required />
+		<% ELSE %> 
+			<input type="number" step="any" min="0" name="price" id="price" required />
+		<% END %>
+	<br />
+
+	Size: 
+		<% IF i_size %>
+			<input type="number" step="any" min="0" name="size" id="size" value="<% i_size %>" required />
+		<% ELSE %> 
+			<input type="number" step="any" min="0" name="size" id="size" required />
 		<% END %>
 
-		<% n = n + 1 %>
+	<br />
+
+	Unit: <select name="unit" required>
+		<% FOREACH unit IN units.keys.nsort %>
+			<% IF units.$unit.name == i_unit %>
+				<option value="<% units.$unit.id %>" selected="selected"><% units.$unit.name %></option>
+			<% ELSE %>
+				<option value="<% units.$unit.id %>"><% units.$unit.name %></option>
+			<% END %>
+		<% END %>
+
+	<br />
+
+	<% IF i_vegan %>
+		<input type="checkbox" name="vegan" id="vegan" checked />Vegan
+	<% ELSE %>
+		<input type="checkbox" name="vegan" id="vegan" />Vegan
 	<% END %>
-</select>
 
-<br />
+	<br />
 
-Notes: <textarea name="notes" rows="10" cols="30" value="<% i_notes %>"></textarea>
+	Type: <select name="type">
+		<option value="(none)">(none)</option>
+		<% FOREACH type IN types.keys.nsort %>
+			<option value="<% types.$type.id %>"><% types.$type.name %></option>
+		<% END %>
+	</select>
 
-<br />
+	<br />
 
-<button type="button" onClick="updateItem()">Update Item</button>
+	Historic low: <input type="text" name="histlow" id="histlow" value="<% i_histlow %>" />
 
-<script>
+	<br />
 
-	function updateItem() {
-		
-		var glist = 'empty';
+	Taste: <select name="taste">
+		<% SET n = 1 %>
+		<% WHILE n < 6 %>
+			<% IF n == i_taste %>
+				<option value="<% n %>" selected="selected"><% n %></option>
+			<% ELSE %>
+				<option value="<% n %>"><% n %></option>
+			<% END %>
 
-	}
+			<% n = n + 1 %>
+		<% END %>
+	</select>
 
-</script>
+	<br />
+
+	Nutrition: <select name="nutrition">
+		<% SET n = 1 %>
+		<% WHILE n < 6 %>
+			<% IF n == i_nutrition %>
+				<option value="<% n %>" selected="selected"><% n %></option>
+			<% ELSE %>
+				<option value="<% n %>"><% n %></option>
+			<% END %>
+
+			<% n = n + 1 %>
+		<% END %>
+	</select>
+
+	<br />
+
+	Notes: <textarea name="notes" rows="10" cols="30" value="<% i_notes %>"></textarea>
+
+	<br />
+
+	<button>Update Item</button>
+
+</form>

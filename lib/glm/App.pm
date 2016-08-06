@@ -42,7 +42,7 @@ post '/my-list' => sub {
 	my $glist = '';
 	my $newList = '';
 
-	if (param('glist') == 'empty') {
+	if (param('glist') eq 'empty') {
 		$glist = $sesh_glist;
 		$newList = $sesh_newList;
 	} else {
@@ -73,6 +73,10 @@ post '/my-list' => sub {
 
 };
 
+get '/my-list' => sub {
+	template 'my-list-after-update', {};
+};
+
 get '/update-item' => sub {
 #get '/update-item' => require_login sub {
 
@@ -93,6 +97,7 @@ get '/update-item' => sub {
 	my $nutrition = param "nutrition";
 	my $notes = param "notes";
 	my $location = param "location";
+	my $is_new = param "is_new";
 
 	my $locations = join(",",@locations);
 
@@ -122,7 +127,7 @@ get '/update-item' => sub {
 		'categories' => $sth_categories->fetchall_hashref('id'),
 		'units' => $sth_units->fetchall_hashref('id'),
 		'types' => $sth_types->fetchall_hashref('id'),
-		'i_id' => $id,
+		'i_item' => $id,
 		'i_store' => $store,
 		'i_product' => $product,
 		'i_brand' => $brand,
@@ -139,14 +144,45 @@ get '/update-item' => sub {
 		'i_nutrition' => $nutrition,
 		'i_notes' => $notes,
 		'i_location' => $location,
+		'is_new' => $is_new,
 	};
 
 };
 
-get '/process-item' => sub {
-#get '/process-item' => require_login sub {
+post '/process-item' => sub {
+#post '/process-item' => require_login sub {
 
-	
+	my $is_new = param "is_new";	
+	my $item = param "item";	
+	my $product = param "product";	
+	my $location = param "location";
+	my $p_un = param "p_un";
+	my $brand = param "brand";
+	my $b_un = param "b_un";
+	my $category = param "category";
+	my $price = param "price";
+	my $size = param "size";
+	my $unit = param "unit";
+	my $vegan = param "vegan";	
+	my $type = param "type";
+	my $histlow = param "histlow";	
+	my $taste = param "taste";
+	my $nutrition = param "nutrition";
+	my $notes = param "notes";
+	my $user = $this_user;
+
+	if ($is_new) {
+		my $sth_new = database->prepare('SELECT * FROM insert_new_item(' . $product. ',' . $location . ',' . $p_un . ',' . $brand . ',' . $b_un . ',' . $category . ',' . $price . ',' . $size . ',' . $unit . ',' . $vegan . ',' . $taste . ',' . $nutrition . ',' . $notes . ',' . $user . ')', { RaiseError => 1 } );
+
+		$sth_new->execute();
+
+	} else {
+		my $sth_update = database->prepare('SELECT * FROM update_x_item(' . $item . ',' . $location . ',' . $p_un . ',' . $brand . ',' . $b_un . ',' . $category . ',' . $price . ',' . $size . ',' . $unit . ',' . $histlow . ',' . $vegan . ',' . $taste . ',' . $nutrition . ',' . $notes . ',' . $user . ')', { RaiseError => 1 } );
+
+		$sth_update->execute();
+	}
+
+	redirect '/my-list';
 	
 };
 
