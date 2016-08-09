@@ -80,7 +80,7 @@ get '/my-list' => sub {
 get '/update-item' => sub {
 #get '/update-item' => require_login sub {
 
-	my $id = param "id";	
+	my $item = param "item";	
 	my $store = param "store";
 	my $product = param "product";
 	my $brand = param "brand";
@@ -98,6 +98,7 @@ get '/update-item' => sub {
 	my $notes = param "notes";
 	my $location = param "location";
 	my $is_new = param "is_new";
+	my $type = param "type";
 
 	my $locations = join(",",@locations);
 
@@ -127,7 +128,7 @@ get '/update-item' => sub {
 		'categories' => $sth_categories->fetchall_hashref('id'),
 		'units' => $sth_units->fetchall_hashref('id'),
 		'types' => $sth_types->fetchall_hashref('id'),
-		'i_item' => $id,
+		'i_item' => $item,
 		'i_store' => $store,
 		'i_product' => $product,
 		'i_brand' => $brand,
@@ -145,6 +146,7 @@ get '/update-item' => sub {
 		'i_notes' => $notes,
 		'i_location' => $location,
 		'is_new' => $is_new,
+		'i_type' => $type,
 	};
 
 };
@@ -156,28 +158,30 @@ post '/process-item' => sub {
 	my $item = param "item";	
 	my $product = param "product";	
 	my $location = param "location";
-	my $p_un = param "p_un";
-	my $brand = param "brand";
-	my $b_un = param "b_un";
+	my $brand = '\'' . param('brand') . '\'';
 	my $category = param "category";
 	my $price = param "price";
 	my $size = param "size";
-	my $unit = param "unit";
-	my $vegan = param "vegan";	
+	my $unit = param "unit";	
 	my $type = param "type";
 	my $histlow = param "histlow";	
 	my $taste = param "taste";
 	my $nutrition = param "nutrition";
-	my $notes = param "notes";
 	my $user = $this_user;
 
+	
+	my $p_un = param('p_un') eq '' ? 'false' : 'true';
+	my $b_un = param('b_un') eq '' ? 'false' : 'true';
+	my $vegan = param('vegan') eq '' ? 'false' : 'true';
+	my $notes = param('notes') eq '' ? '0' : '\'' . param('notes') . '\'';
+
 	if ($is_new) {
-		my $sth_new = database->prepare('SELECT * FROM insert_new_item(' . $product. ',' . $location . ',' . $p_un . ',' . $brand . ',' . $b_un . ',' . $category . ',' . $price . ',' . $size . ',' . $unit . ',' . $vegan . ',' . $taste . ',' . $nutrition . ',' . $notes . ',' . $user . ')', { RaiseError => 1 } );
+		my $sth_new = database->prepare('SELECT * FROM insert_new_item(' . $product. ',' . $location . ',' . $p_un . ',' . $brand . ',' . $b_un . ',' . $category . ',' . $price . ',' . $type . ',' . $size . ',' . $unit . ',' . $vegan . ',' . $taste . ',' . $nutrition . ',' . $notes . ',' . $user . ')', { RaiseError => 1 } );
 
 		$sth_new->execute();
 
 	} else {
-		my $sth_update = database->prepare('SELECT * FROM update_x_item(' . $item . ',' . $location . ',' . $p_un . ',' . $brand . ',' . $b_un . ',' . $category . ',' . $price . ',' . $size . ',' . $unit . ',' . $histlow . ',' . $vegan . ',' . $taste . ',' . $nutrition . ',' . $notes . ',' . $user . ')', { RaiseError => 1 } );
+		my $sth_update = database->prepare('SELECT * FROM update_x_item(' . $item . ',' . $location . ',' . $p_un . ',' . $brand . ',' . $b_un . ',' . $category . ',' . $price . ',' . $size . ',' . $unit . ',' . $type . ',' . $histlow . ',' . $vegan . ',' . $taste . ',' . $nutrition . ',' . $notes . ',' . $user . ')', { RaiseError => 1 } );
 
 		$sth_update->execute();
 	}
